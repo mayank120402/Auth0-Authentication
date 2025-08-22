@@ -1,0 +1,14 @@
+{
+  "domain": "YOUR_TENANT_REGION.auth0.com",
+  "clientId": "YOUR_CLIENT_ID",
+  "authorizationParams": {
+    "redirect_uri": "https://YOUR-PROJECT.vercel.app/callback.html"
+  },
+  "logoutParams": {
+    "returnTo": "https://YOUR-PROJECT.vercel.app/"
+  },
+  "adminAllowList": [
+    "admin1@example.com",
+    "admin2@example.com"
+  ]
+}
