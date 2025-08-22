@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Admin • My Site</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <style>
+    body { font-family: system-ui, Arial, sans-serif; margin: 24px; }
+    button { margin-right: 10px; }
+    .card { padding: 16px; border: 1px solid #ddd; border-radius: 10px; max-width: 720px; }
+  </style>
+</head>
+<body>
+  <h1>Admin Dashboard</h1>
+  <nav>
+    <button id="btn-logout">Logout</button>
+    <a href="/">Back to Home</a>
+  </nav>
+
+  <div id="admin-content" class="card" style="margin-top:16px;">
+    <h3>Secure Admin Area</h3>
+    <p id="who"></p>
+    <hr />
+    <!-- yahan aap apna CRUD UI add kar sakte hain -->
+    <p>Example: Only allow-listed admins can see this content.</p>
+  </div>
+
+  <script src="https://cdn.auth0.com/js/auth0-spa-js/1.13/auth0-spa-js.production.js"></script>
+  <script src="/auth.js"></script>
+  <script>
+    (async () => {
+      await initAuth0();
+      const cfg = await loadConfig();
+      const authed = await isAuthenticated();
+
+      if (!authed) {
+        // not logged in → send to login
+        await login();
+        return;
+      }
+
+      const user = await getUser();
+      const ok = isAdmin(user, cfg.adminAllowList || []);
+      if (!ok) {
+        // not admin → send home
+        window.location.replace('/');
+        return;
+      }
+
+      document.getElementById('who').textContent = `Logged in as: ${user.email}`;
+      document.getElementById('btn-logout').onclick = logout;
+    })();
+  </script>
+</body>
+</html>
