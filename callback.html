@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Auth Callback</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+</head>
+<body>
+  <p>Completing sign-in…</p>
+
+  <script src="https://cdn.auth0.com/js/auth0-spa-js/1.13/auth0-spa-js.production.js"></script>
+  <script src="/auth.js"></script>
+  <script>
+    (async () => {
+      await initAuth0();
+      // handle the redirect from Auth0 and set the session
+      await auth0Client.handleRedirectCallback().catch(console.error);
+      // back to home (you can implement appState for original route)
+      window.location.replace('/');
+    })();
+  </script>
+</body>
+</html>
