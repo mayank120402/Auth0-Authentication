@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>My Site</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <style>
+    body { font-family: system-ui, Arial, sans-serif; margin: 24px; }
+    nav a, button { margin-right: 12px; }
+    .hidden { display: none; }
+    .card { padding: 16px; border: 1px solid #ddd; border-radius: 10px; max-width: 640px; }
+  </style>
+</head>
+<body>
+  <h1>My Site (HTML + JS + Auth0)</h1>
+
+  <nav>
+    <button id="btn-login" class="hidden">Login</button>
+    <button id="btn-logout" class="hidden">Logout</button>
+    <a href="/admin.html" id="admin-link" class="hidden">Go to Admin</a>
+  </nav>
+
+  <div id="status" class="card" style="margin-top:16px;"></div>
+  <div id="profile" class="card hidden" style="margin-top:16px;">
+    <h3>User Profile</h3>
+    <pre id="profile-json" style="white-space: pre-wrap;"></pre>
+  </div>
+
+  <!-- Auth0 SPA helpers -->
+  <script src="https://cdn.auth0.com/js/auth0-spa-js/1.13/auth0-spa-js.production.js"></script>
+  <script src="/auth.js"></script>
+
+  <script>
+    (async () => {
+      await initAuth0();
+      const authed = await isAuthenticated();
+
+      const cfg = await loadConfig();
+      const loginBtn = document.getElementById('btn-login');
+      const logoutBtn = document.getElementById('btn-logout');
+      const adminLink = document.getElementById('admin-link');
+      const status = document.getElementById('status');
+      const profile = document.getElementById('profile');
+      const profileJson = document.getElementById('profile-json');
+
+      loginBtn.onclick = login;
+      logoutBtn.onclick = logout;
+
+      if (!authed) {
+        loginBtn.classList.remove('hidden');
+        status.textContent = 'You are not logged in. Please login to access Admin.';
+        return;
+      }
+
+      const user = await getUser();
+      logoutBtn.classList.remove('hidden');
+      adminLink.classList.remove('hidden');
+      status.textContent = `Logged in as: ${user?.name || user?.email || 'User'}`;
+      profile.classList.remove('hidden');
+      profileJson.textContent = JSON.stringify(user, null, 2);
+    })();
+  </script>
+</body>
+</html>
